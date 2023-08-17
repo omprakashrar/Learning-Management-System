@@ -1,35 +1,31 @@
-import path from 'path';
-import multer from 'multer';
+import path from "path";
 
-// Set up the storage for uploaded files
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    // Set the filename to be used for the uploaded file
-    cb(null, Date.now() + '-' + file.originalname);
-  },
-});
-
-
-const fileFilter = function (req, file, cb) {
-  if (file.mimetype.startsWith('')) {
-    cb(null, true);
-  } else {
-  
-    cb(new Error('Only images are allowed!'), false);
-  }
-};
-
+import multer from "multer";
 
 const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 1024 * 1024 * 50, // Limit file size to 5 MB
+  dest: "uploads/",
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 mb in size max limit
+  storage: multer.diskStorage({
+    destination: "uploads/",
+    filename: (_req, file, cb) => {
+      cb(null, file.originalname);
+    },
+  }),
+  fileFilter: (_req, file, cb) => {
+    let ext = path.extname(file.originalname);
+    if (
+      ext !== ".jpg" &&
+      ext !== ".jpeg" &&
+      ext !== ".webp" &&
+      ext !== ".png" &&
+      ext !== ".mp4"
+    ) {
+      cb(new Error(`Unsupported file type! ${ext}`), false);
+      return;
+    }
+
+    cb(null, true);
   },
-  fileFilter: fileFilter,
 });
 
 export default upload;

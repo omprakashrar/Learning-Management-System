@@ -8,10 +8,13 @@ import {config} from'dotenv';
 import morgan from 'morgan';
 import userRoute from './routes/user.routes.js'
 import errorMiddleware from './middlewares/error.middleware.js'; // Provide the correct path here
+import courseRoutes from './routes/course.routes.js';
 
 config();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true}));
+
 app.use(errorMiddleware);
 
 
@@ -29,7 +32,8 @@ app.use('/ping', function(req,res){
 
 });
 
-app.use('/api/v1/user', userRoute)
+app.use('/api/v1/user', userRoute);
+app.use('/api/v1/courses', courseRoutes )
 
 
 
